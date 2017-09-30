@@ -1,6 +1,6 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-                                                                           Database Design
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                                                                      Database Design
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 =================Relationships=================
 
@@ -10,15 +10,61 @@
 
 2.   many to many --> this requires a link table. For example, an author can have many books and a book can have many Authors.
      So rather than creating multiple author columns or multipple book columns,
-     we instead create a link table consisting of one column being the Author_id and one column being the Book_id, 
+     we instead create a link table consisting of one column being the Author_id and one column being the Book_id,
      this way we can search that table when we need results for the many to many relationship.
+     The table name is the combination of both the oroginal tables. e.g. a students table and a class table would give the studentClass table.
 
-3.   1-1 --> this is less common and quite often the data in the tables should just be combined.
+3.   1-1 --> this is less common and quite often the data in the tables should just be combined. Remeber to check the relationship both ways.
+     It may be 1-1 in one direction but 1-many in the other.
 
-================= Database design questions ===============
+================= Database design steps ===============
 
 1. What "Entities do I have?"
    a. What is the point of the database --> be descriptive, look at what you may want the database to do in the future
    b. What do you have already --> incorporate the data that is already being used (spreadsheets etc).
-   c. identify entities --> Customer, Order, Order Item, Product etc.
+   c. Identify entities --> Customer, Order, Order Item, Product etc.
+   d. Identify entity attributes --> these are your columns, be granular (e.g. first name, last name etc. Not just name), be consistent with how you name them
+      For example, cammel case or pascal case (all words capitalised), or use of underscores for spaces.
+   e. Decide on datatype for each attribute - if your more specific then the storage is more efficient but less flexible
+   f. Decide if the attribute can be null or if it can have a default value
+
+2. Decide what the primary key should be
+   a. if there is a naturally unique piece of data associated with an entry then use that (e.g. book ISBN) if not create an auto incrementing id column
+   b. Decide if a composite key is required (the combination of two columns is used as primary key)
+     - example of composite key is where a course date and title are used (a date can have multiple courses and a course can run on multiple dates
+       but the combination of the two gives a unique key)
+
+3. Define the relationships between the tables (e.g. 1-1, 1-many, many-many).
+   a. Decide on the foreign keys for the 1-many relationships
+   b. Decide on the link tables for the many-many relationships
+   c. Deide on "Referential Integrity" rules - what happens when the 1 is deleted in a 1-many relationship? (Usually no action/refusal to delete is best option)
+
+4. Take the database design to 3NF --> see below for details
+
+
+====================== Normalisation ======================
+
+These are a set of criteria to ensure data integrity and to reduce repeats in database. Subsequent normal forms require the previous ones to be already implemented
+1. First Normal Form (1NF)
+     - Each column in each row should have one (and only one!) value
+     - There should be no repeating groups (e.g. computer1, computer2, computer 3 etc)
+     use case: For example, you want to track employee computers, some employees have 1 computer, but some have 2 or 3 etc. You shouldn't have 1 employeeComputer
+     column with multiple computer id's in it (this is hard to search and maintain), also you shouldn't have multiple columns for each computer (computer 1,
+     computer 2, computer 3 etc). What you should do instead is create another table (maybe computer table) that uses the computer seriel number as the primary
+     key and then uses a 1-many relationship to assign the computer to an employee.
+
+2. Second Normal Form (2NF)
+     - Any non-key field should be dependant on the entire primary key
+     - This only matters for tables with composite primary keys
+     use case: You have a table to show course details. The primary key is a combination of the course code and date (as the course can run on several dates
+     and a date can have several courses but the combination is unique). another column is course title. This breaks second normal form as the course title
+     only depends on the course code and not on the course date. To fix this, the course title should be extraced to a seperate table with the course code.
+     2NF is implemented to prevent future conflicts if someone changes the piece of data that is dependant on only half of the composite primary key.
+
+3. Third Normal Form (3NF)
+     - No non-key field should be dependent on any other non-key field.
+     Use case: The course details table used above also shows the room number and the capacity of that room. If this room is used more than once then the
+     capacity of that room needs to be written again, needlessly. So instead a new room table should be created which shows the capacities and then a 1-many
+     relationship defined (a single room can have several courses in it over time).
+
 
