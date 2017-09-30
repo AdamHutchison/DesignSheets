@@ -1,0 +1,24 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                                                                           Database Design
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+=================Relationships=================
+
+1.   1 to many --> reference the primary key in the "1" table in the "many table".
+     For example if customers can have many orders so the orders table should have a customer_id column which links to the customers id.
+     This is called a foreign key.
+
+2.   many to many --> this requires a link table. For example, an author can have many books and a book can have many Authors.
+     So rather than creating multiple author columns or multipple book columns,
+     we instead create a link table consisting of one column being the Author_id and one column being the Book_id, 
+     this way we can search that table when we need results for the many to many relationship.
+
+3.   1-1 --> this is less common and quite often the data in the tables should just be combined.
+
+================= Database design questions ===============
+
+1. What "Entities do I have?"
+   a. What is the point of the database --> be descriptive, look at what you may want the database to do in the future
+   b. What do you have already --> incorporate the data that is already being used (spreadsheets etc).
+   c. identify entities --> Customer, Order, Order Item, Product etc.
+
